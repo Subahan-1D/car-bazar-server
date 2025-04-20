@@ -22,8 +22,26 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const carServiceCollection = client.db("carBazar").collection("service");
+    const workFeedBackCollcetion = client.db("carBazar").collection("feedback");
+    const expertCollection = client.db("carBazar").collection("expert");
+
+    // Service data
+    app.get("/service", async (req, res) => {
+      const result = await carServiceCollection.find().toArray();
+      res.send(result);
+    });
+    // Feedback data
+    app.get("/feedback", async (req, res) => {
+      const result = await workFeedBackCollcetion.find().toArray();
+      res.send(result);
+    });
+    // expert data
+    app.get("/expert", async (req, res) => {
+      const result = await expertCollection.find().toArray();
+      res.send(result);
+    });
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
