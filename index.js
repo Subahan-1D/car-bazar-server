@@ -26,6 +26,7 @@ async function run() {
     const carServiceCollection = client.db("carBazar").collection("service");
     const workFeedBackCollcetion = client.db("carBazar").collection("feedback");
     const expertCollection = client.db("carBazar").collection("expert");
+    const contactCollection = client.db("carBazar").collection("contact");
 
     // Service data
     app.get("/service", async (req, res) => {
@@ -40,6 +41,12 @@ async function run() {
     // expert data
     app.get("/expert", async (req, res) => {
       const result = await expertCollection.find().toArray();
+      res.send(result);
+    });
+
+    // contact section
+    app.get("/contact", async (req, res) => {
+      const result = await contactCollection.find().toArray();
       res.send(result);
     });
     // Send a ping to confirm a successful connection
