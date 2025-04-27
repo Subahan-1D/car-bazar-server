@@ -27,6 +27,7 @@ async function run() {
     const workFeedBackCollcetion = client.db("carBazar").collection("feedback");
     const expertCollection = client.db("carBazar").collection("expert");
     const contactCollection = client.db("carBazar").collection("contact");
+    const cartCollection = client.db("carBazar").collection("carts");
 
     // Service data
     app.get("/service", async (req, res) => {
@@ -49,6 +50,20 @@ async function run() {
       const result = await contactCollection.find().toArray();
       res.send(result);
     });
+
+    // cartCollection  post or add to cart
+
+    app.post("/carts", async (req, res) => {
+      const serviceCartItem = req.body;
+      const result = await cartCollection.insertOne(serviceCartItem);
+      res.send(result);
+    });
+
+    app.get("/carts", async (req, res) => {
+      const result = await carServiceCollection.find().toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
