@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const cors = require("cors");
 require("dotenv").config();
 const port = process.env.PORT || 8000;
@@ -28,6 +28,15 @@ async function run() {
     const expertCollection = client.db("carBazar").collection("expert");
     const contactCollection = client.db("carBazar").collection("contact");
     const cartCollection = client.db("carBazar").collection("carts");
+    const userCollection = client.db("carBazar").collection("users");
+
+    // user related api
+
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+    });
 
     // Service data
     app.get("/service", async (req, res) => {
@@ -58,9 +67,19 @@ async function run() {
       const result = await cartCollection.insertOne(serviceCartItem);
       res.send(result);
     });
-
+    // specie user diya data dekhano
     app.get("/carts", async (req, res) => {
-      const result = await carServiceCollection.find().toArray();
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await cartCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // specie delete data for dashboard
+    app.delete("/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
       res.send(result);
     });
 
