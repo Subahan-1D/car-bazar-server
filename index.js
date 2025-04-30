@@ -32,11 +32,35 @@ async function run() {
 
     // user related api
 
+    app.get("/users", async (req, res) => {
+      const result = await userCollection.find().toArray();
+      res.send(result);
+    });
+
     app.post("/users", async (req, res) => {
       const user = req.body;
+      //  insert email if user donsnt exits
+      // one user insert or duplicate user not be insert
+      const query = { email: user.email };
+      const exitstingUser = await userCollection.findOne(query);
+      if (exitstingUser) {
+        return res.send({ message: "user already exits", insertedId: null });
+      }
       const result = await userCollection.insertOne(user);
       res.send(result);
     });
+    // users delete or admin 
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // user  or admin check
+    app.patch('/users/admin/:id', async(req,res=>{
+      
+    }))
 
     // Service data
     app.get("/service", async (req, res) => {
