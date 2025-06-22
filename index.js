@@ -135,9 +135,17 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/service", async (req, res) => {
+    // service post  form add service
+    app.post("/service", verifyToken, verifyAdmin, async (req, res) => {
       const item = req.body;
       const result = await carServiceCollection.insertOne(item);
+      res.send(result);
+    });
+    // service manage service data delete
+    app.delete("/service/:id", verifyToken, verifyAdmin, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await carServiceCollection.deleteOne(query);
       res.send(result);
     });
     // Feedback data
