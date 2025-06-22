@@ -135,10 +135,40 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/service/:id", async (req, res) => {
+      const id = req.params.id;
+
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "Invalid ID" });
+      }
+
+      const result = await carServiceCollection.findOne({
+        _id: new ObjectId(id),
+      });
+      res.json(result);
+    });
     // service post  form add service
     app.post("/service", verifyToken, verifyAdmin, async (req, res) => {
       const item = req.body;
       const result = await carServiceCollection.insertOne(item);
+      res.send(result);
+    });
+    // service data update or patch
+    app.patch("/service/:id", async (req, res) => {
+      const item = req.body;
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          category: item.category,
+          title: item.title,
+          price: item.price,
+          image: item.image,
+          description: item.description,
+          features: item.features,
+        },
+      };
+      const result = await carServiceCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
     // service manage service data delete
