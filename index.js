@@ -129,9 +129,15 @@ async function run() {
       }
     );
 
-    // Service data
+    // Service related api
     app.get("/service", async (req, res) => {
       const result = await carServiceCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post("/service", async (req, res) => {
+      const item = req.body;
+      const result = await carServiceCollection.insertOne(item);
       res.send(result);
     });
     // Feedback data
